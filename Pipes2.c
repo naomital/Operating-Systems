@@ -18,7 +18,7 @@ if(strlen(concat_str)==32){
     flag= true;
 
 }else{
-    printf("%zu  ",strlen(concat_str));  
+    printf("the size of concat_str is:  %zu  ",strlen(concat_str));  
 }
 }
 int main() 
@@ -74,8 +74,8 @@ int main()
         close(fd1[1]); 
   
         // Wait for child to send a string 
-        wait(NULL); 
-  
+       // wait(NULL); 
+         sleep(3);
         close(fd2[1]); // Close writing end of second pipe 
   
         // Read string from child, print it and close 
@@ -88,6 +88,7 @@ int main()
          printf("Concatenated string %s\n", concat_str); 
         kill(p, SIGKILL);       
          }
+         wait(NULL);
     } 
   
     // child process 
@@ -102,16 +103,14 @@ int main()
   
          // Close both reading ends 
         close(fd1[0]); 
-         close(fd2[0]); 
+        close(fd2[0]);
+        sleep(4); 
   
          // Write concatenated string and close writing end 
          write(fd2[1], str.c_str(), 32); 
         close(fd2[1]); 
-            sleep(10);
         kill(getppid(),SIGTERM);
-       
-
-  
+       for(;;){sleep(2);}
         exit(0); 
     } 
 }
