@@ -9,16 +9,16 @@
 #include<sys/wait.h> 
 #include "md5.h"
 # include <signal.h>
-
+bool flag = false;
 pid_t p; 
-char concat_str[32]; 
+char concat_str[33]; 
 void handle_sigint(int sig) {
-    printf("lllllll");
-if(sizeof(concat_str)==32){
- printf("Concatenated string %s\n", concat_str); 
-kill(p, SIGKILL);
+    printf("is in ");
+if(strlen(concat_str)==32){
+    flag= true;
+
 }else{
-    exit(0);
+    printf("%zu  ",strlen(concat_str));  
 }
 }
 int main() 
@@ -62,6 +62,9 @@ int main()
     // Parent process 
     else if (p > 0) 
     { 
+          if(signal(SIGTERM, handle_sigint)== SIG_ERR){
+             printf("signal error");
+         }
   
         close(fd1[0]);  // Close reading end of first pipe 
   
@@ -78,9 +81,13 @@ int main()
         // Read string from child, print it and close 
         // reading end. 
         read(fd2[0], concat_str, 32); 
-         printf("Concatenated string %s\n", concat_str); 
+                close(fd2[0]); 
+                
 
-        close(fd2[0]); 
+        if(flag){
+         printf("Concatenated string %s\n", concat_str); 
+        kill(p, SIGKILL);       
+         }
     } 
   
     // child process 
@@ -100,11 +107,9 @@ int main()
          // Write concatenated string and close writing end 
          write(fd2[1], str.c_str(), 32); 
         close(fd2[1]); 
-            printf("ppppppp");
-
-        if(signal(SIGINT, handle_sigint)== SIG_ERR){
-            printf("signal error");
-        }
+            sleep(10);
+        kill(getppid(),SIGTERM);
+       
 
   
         exit(0); 
