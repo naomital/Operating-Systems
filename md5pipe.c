@@ -13,7 +13,7 @@ bool flag = false;
 pid_t p; 
 char concat_str[33]; 
 void handle_sigint(int sig) {
-    printf("is in ");
+   // printf("is in ");
 if(strlen(concat_str)==32){
     flag= true;
 
@@ -31,7 +31,7 @@ int main()
     int fd2[2];  // Used to store two ends of second pipe 
   // input number from user
     char input_str[20] =""; 
-    printf("enter a number");
+    printf("plain text:");
     for (size_t i = 0; i < 20; i++)
     {
        input_str[i]= getchar();
@@ -85,7 +85,7 @@ int main()
                 
 
         if(flag){
-         printf("Concatenated string %s\n", concat_str); 
+         printf("encrypted by process %d %s\n",getpid(), concat_str); 
         kill(p, SIGKILL);       
          }
          wait(NULL);
